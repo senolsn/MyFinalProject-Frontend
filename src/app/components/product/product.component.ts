@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Product } from 'src/app/models/product';
 import { ProductService } from 'src/app/services/product.service';
+import { ToastrService } from 'ngx-toastr';
+import { CartService } from 'src/app/services/cart.service';
+
 
 @Component({
   selector: 'app-product',
@@ -11,7 +14,8 @@ import { ProductService } from 'src/app/services/product.service';
 export class ProductComponent implements OnInit {
   products: Product[] = [];
   dataLoaded:boolean = false;
-  constructor(private productService:ProductService, private activatedRoute:ActivatedRoute) {} //Not: DI bu yapı hazır olarak angular içinde gelmektedir.
+  filterText = "";
+  constructor(private productService:ProductService, private activatedRoute:ActivatedRoute, private toastrService:ToastrService, private cartService:CartService) {} //Not: DI bu yapı hazır olarak angular içinde gelmektedir.
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
@@ -36,5 +40,10 @@ export class ProductComponent implements OnInit {
       this.dataLoaded = true;
 
     });
+  }
+
+  addToCart(product:Product){
+    this.cartService.addToCart(product);
+    this.toastrService.success("Sepete Eklendi !",product.productName)
   }
 }
